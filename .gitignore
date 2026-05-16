@@ -1,0 +1,97 @@
+# Secretos y variables de entorno
+.env
+.env.*
+!.env.example
+!.env.local.example
+
+# Firebase y Google
+firebase-service-account.json
+*.service-account.json
+*firebase*adminsdk*.json
+google-services.json
+
+# Dependencias
+node_modules/
+vendor/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Lockfiles opcionalmente ignorados si decides no subirlos
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Build y artefactos generados
+.expo/
+.expo-shared/
+dist/
+build/
+.gradle/
+.m2/
+android/app/build/
+android/app/.gradle/
+android/.gradle/
+android/local.properties
+*.apk
+*.aar
+*.jks
+*.keystore
+ios/Pods/
+ios/build/
+*.ipa
+*.xcarchive
+.serverless/
+.dynamodb/
+dynamodb-local-metadata.json
+*.zip
+.webpack/
+
+# Logs y archivos temporales
+*.log
+*.logs
+tmp/
+temp/
+.tmp
+*.tmp
+coverage/
+.coverage
+.nyc_output/
+
+# Sistema e IDE
+.DS_Store
+Thumbs.db
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.iml
+.eclipse/
+.classpath
+.project
+.settings/
+
+# Docker y bases locales
+docker-compose.override.yml
+.docker/
+*.db
+*.sqlite
+*.sqlite3
+local-db/
+
+# Testing y debug
+.jest_cache/
+jest-coverage/
+test-results/
+.react-native-debugger/
+.rn-debugger/
+
+# React Native específico
+.watchman_socket
+.haste_cache
+watchman-del-socket-*
+*.jsbundle

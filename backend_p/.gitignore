@@ -1,0 +1,36 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Firebase service account keys
+firebase-service-account.json
+*.service-account.json
+*firebase*adminsdk*.json
+
+# Serverless and local infrastructure artifacts
+.serverless/
+.dynamodb/
+dynamodb-local-metadata.json
+*.zip
+
+# Build outputs and temp files
+build/
+dist/
+coverage/
+tmp/
+temp/
+*.tmp
+*.log
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
