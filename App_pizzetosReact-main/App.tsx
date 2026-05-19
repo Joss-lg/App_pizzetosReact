@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { CartProvider } from './src/CartContext';
 import { AuthProvider, useAuth } from './src/AuthContext';
 import { DeliveryProvider } from './src/DeliveryContext';
+import { SucursalProvider } from './src/SucursalContext';
 
 // Importación de Pantallas
 import LoginScreen from './src/screens/LoginScreen';
@@ -106,11 +107,13 @@ function RootNavigator(): React.JSX.Element {
 function App(): React.JSX.Element {
   return (
     <AuthProvider>
-      <DeliveryProvider>
-        <CartProvider>
-          <RootNavigator />
-        </CartProvider>
-      </DeliveryProvider>
+      <SucursalProvider>
+        <DeliveryProvider>
+          <CartProvider>
+            <RootNavigator />
+          </CartProvider>
+        </DeliveryProvider>
+      </SucursalProvider>
     </AuthProvider>
   );
 }

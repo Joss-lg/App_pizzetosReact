@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions, TextInput, Modal, Pressable, Alert } from 'react-native';
 import { useAuth } from '../AuthContext';
+import { useSucursal } from '../SucursalContext';
+import { SUCURSALES_DISPONIBLES } from '../data/sucursales';
 
 const { width } = Dimensions.get('window');
 
 export default function InicioScreen({ navigation }: any) {
   const [menuVisible, setMenuVisible] = useState(false);
+  const [sucursalSelectorVisible, setSucursalSelectorVisible] = useState(false);
   const { user, logout } = useAuth();
+  const { sucursalSeleccionada, setSucursalSeleccionada } = useSucursal();
 
   const accountData = {
     name: user?.displayName || 'Mi cuenta',
@@ -56,15 +60,56 @@ export default function InicioScreen({ navigation }: any) {
         </Pressable>
       </Modal>
 
+      <Modal
+        animationType="fade"
+        transparent
+        visible={sucursalSelectorVisible}
+        onRequestClose={() => setSucursalSelectorVisible(false)}
+      >
+        <Pressable style={styles.modalOverlay} onPress={() => setSucursalSelectorVisible(false)}>
+          <Pressable style={styles.sucursalMenuCard} onPress={() => null}>
+            <Text style={styles.sucursalMenuTitle}>Sucursales disponibles</Text>
+            <Text style={styles.sucursalMenuSubtitle}>Selecciona desde dónde quieres pedir.</Text>
+
+            {SUCURSALES_DISPONIBLES.map(sucursal => {
+              const seleccionada = sucursalSeleccionada?.id === sucursal.id;
+
+              return (
+                <TouchableOpacity
+                  key={sucursal.id}
+                  style={[styles.sucursalOption, seleccionada && styles.sucursalOptionSelected]}
+                  onPress={() => {
+                    setSucursalSeleccionada(sucursal);
+                    setSucursalSelectorVisible(false);
+                  }}
+                >
+                  <View style={styles.sucursalOptionTextWrap}>
+                    <Text style={styles.sucursalOptionTitle}>{sucursal.nombre}</Text>
+                    <Text style={styles.sucursalOptionAddress}>{sucursal.direccion}</Text>
+                  </View>
+                  {seleccionada ? <Text style={styles.sucursalCheck}>✓</Text> : null}
+                </TouchableOpacity>
+              );
+            })}
+          </Pressable>
+        </Pressable>
+      </Modal>
+
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       
       {/* HEADER */}
       <View style={styles.header}>
         <View>
           <Text style={styles.headerSubtitle}>Entrega en</Text>
-          <View style={styles.locationRow}>
-            <Text style={styles.locationText}>📍 Valle de Chalco ▾</Text>
-          </View>
+          <TouchableOpacity
+            style={styles.locationRow}
+            activeOpacity={0.8}
+            onPress={() => setSucursalSelectorVisible(true)}
+          >
+            <Text style={styles.locationText}>
+              {`📍 ${sucursalSeleccionada?.nombreCorto ?? 'Selecciona sucursal'} ▾`}
+            </Text>
+          </TouchableOpacity>
         </View>
         <TouchableOpacity onPress={() => setMenuVisible(true)} activeOpacity={0.8}>
           <Image
@@ -154,6 +199,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#2E3440',
   },
+  sucursalMenuCard: {
+    width: '92%',
+    maxWidth: 380,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 22,
+    padding: 18,
+    borderWidth: 1,
+    borderColor: '#EAEAEA',
+  },
   profileHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -187,6 +241,52 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '800',
     fontSize: 15,
+  },
+  sucursalMenuTitle: {
+    color: '#111111',
+    fontSize: 22,
+    fontWeight: '800',
+  },
+  sucursalMenuSubtitle: {
+    color: '#6B7280',
+    fontSize: 13,
+    marginTop: 4,
+    marginBottom: 14,
+  },
+  sucursalOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#E9E9E9',
+    borderRadius: 18,
+    padding: 14,
+    marginBottom: 10,
+    backgroundColor: '#FAFAFA',
+  },
+  sucursalOptionSelected: {
+    borderColor: '#22C55E',
+    backgroundColor: '#F0FDF4',
+  },
+  sucursalOptionTextWrap: {
+    flex: 1,
+    paddingRight: 12,
+  },
+  sucursalOptionTitle: {
+    color: '#111111',
+    fontSize: 15,
+    fontWeight: '800',
+    marginBottom: 4,
+  },
+  sucursalOptionAddress: {
+    color: '#6B7280',
+    fontSize: 12,
+    lineHeight: 18,
+  },
+  sucursalCheck: {
+    color: '#16A34A',
+    fontSize: 18,
+    fontWeight: '900',
   },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 },
   headerSubtitle: { color: '#888', fontSize: 12, fontWeight: '600' },

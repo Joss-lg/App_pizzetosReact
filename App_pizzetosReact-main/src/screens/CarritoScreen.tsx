@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Linking, A
 import { useCart } from '../CartContext';
 import { useAuth } from '../AuthContext';
 import { useDelivery } from '../DeliveryContext';
+import { useSucursal } from '../SucursalContext';
 import DeliveryModal from '../components/DeliveryModal';
 import ConfirmDeliveryModal from '../components/ConfirmDeliveryModal';
 import apiClient from '../services/apiClient';
@@ -11,6 +12,7 @@ export default function CarritoScreen() {
   const { items, total, addToCart, clearCart } = useCart();
   const { isSignedIn, user } = useAuth();
   const { deliveryData, loadDeliveryData } = useDelivery();
+  const { sucursalSeleccionada } = useSucursal();
   const isGuestUser = !!user?.id?.startsWith('guest_');
   const [tienePromoActiva, setTienePromoActiva] = useState(false);
   const [jarritoAgregado, setJarritoAgregado] = useState(false);
@@ -92,6 +94,7 @@ export default function CarritoScreen() {
     
     mensaje += `\n*Total a Pagar: $${total}*\n`;
     mensaje += `\n*Datos de Entrega:*\n`;
+    mensaje += `🏪 Sucursal: ${sucursalSeleccionada?.nombre ?? 'No seleccionada'}\n`;
     mensaje += `👤 Nombre: ${deliveryData.nombreCompleto}\n`;
     mensaje += `📧 Email: ${deliveryData.email}\n`;
     mensaje += `📱 Teléfono: ${deliveryData.telefonoContacto}\n`;

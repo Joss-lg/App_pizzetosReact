@@ -7,26 +7,57 @@ import {
   Linking,
   ScrollView,
   Alert,
+  Platform,
 } from 'react-native';
-
-const SUCURSALES = [
-  {
-    id: 'miraflores',
-    nombre: 'Pizzetos Miraflores',
-    telefono: '55 8445 7355',
-    whatsapp: '5215584457355',
-    direccion: 'Carretera Chalco Manzana 005, Miraflores, 56645 San Mateo Tezoquipan, Méx.',
-    googleMapsLink:
-      'https://www.google.com/maps/search/?api=1&query=Pizzeto+Pizza+-+Miraflores&query_place_id=ChIJSVWDBIgjzoURaBS2djMchUM',
-  },
-];
+import { SUCURSALES_DISPONIBLES } from '../data/sucursales';
 
 const abrirEnlace = async (url: string) => {
-  const soportado = await Linking.canOpenURL(url);
-  if (soportado) {
+  try {
+    const soportado = await Linking.canOpenURL(url);
+    if (!soportado) {
+      throw new Error('URL no soportada');
+    }
+
     await Linking.openURL(url);
-  } else {
+  } catch {
     Alert.alert('Error', 'No se pudo abrir el enlace.');
+  }
+};
+
+const abrirWhatsapp = async (telefono: string) => {
+  const mensaje = 'Hola, quiero pedir en Pizzetos.';
+  const urlApp = `whatsapp://send?phone=${telefono}&text=${encodeURIComponent(mensaje)}`;
+  const urlWeb = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+
+  try {
+    const soportaApp = await Linking.canOpenURL(urlApp);
+
+    if (soportaApp) {
+      await Linking.openURL(urlApp);
+      return;
+    }
+
+    await Linking.openURL(urlWeb);
+  } catch {
+    Alert.alert('Error', 'No se pudo abrir WhatsApp.');
+  }
+};
+
+const abrirGoogleMaps = async (direccion: string, googleMapsLink: string) => {
+  const query = encodeURIComponent(direccion);
+  const urlGeo = Platform.OS === 'android' ? `geo:0,0?q=${query}` : `maps:0,0?q=${query}`;
+
+  try {
+    const soportaMapaNativo = await Linking.canOpenURL(urlGeo);
+
+    if (soportaMapaNativo) {
+      await Linking.openURL(urlGeo);
+      return;
+    }
+
+    await Linking.openURL(googleMapsLink);
+  } catch {
+    Alert.alert('Error', 'No se pudo abrir Google Maps.');
   }
 };
 
@@ -41,7 +72,7 @@ export default function SucursalScreen() {
         <View style={styles.divider} />
       </View>
 
-      {SUCURSALES.map(sucursal => (
+      {SUCURSALES_DISPONIBLES.map(sucursal => (
         <View key={sucursal.id} style={styles.card}>
           {/* Encabezado de la tarjeta */}
           <View style={styles.cardHeader}>
@@ -58,12 +89,15 @@ export default function SucursalScreen() {
           </View>
 
           {/* Dirección */}
-          <View style={styles.infoRow}>
+          <TouchableOpacity
+            style={styles.infoRow}
+            onPress={() => abrirGoogleMaps(sucursal.direccion, sucursal.googleMapsLink)}
+          >
             <View style={styles.iconoBadge}>
               <Text style={styles.iconoBadgeText}>🗺️</Text>
             </View>
             <Text style={styles.infoTexto}>{sucursal.direccion}</Text>
-          </View>
+          </TouchableOpacity>
 
           {/* Teléfono */}
           <TouchableOpacity
@@ -79,7 +113,7 @@ export default function SucursalScreen() {
           {/* Botones */}
           <TouchableOpacity
             style={styles.botonWhatsapp}
-            onPress={() => abrirEnlace(`https://wa.me/${sucursal.whatsapp}`)}
+            onPress={() => abrirWhatsapp(sucursal.whatsapp)}
           >
             <Text style={styles.botonWhatsappIcono}>💬</Text>
             <Text style={styles.botonWhatsappTexto}>Pedir por WhatsApp</Text>
@@ -87,7 +121,7 @@ export default function SucursalScreen() {
 
           <TouchableOpacity
             style={styles.botonMaps}
-            onPress={() => abrirEnlace(sucursal.googleMapsLink)}
+            onPress={() => abrirGoogleMaps(sucursal.direccion, sucursal.googleMapsLink)}
           >
             <Text style={styles.botonMapsTexto}>Abrir en Google Maps ↗</Text>
           </TouchableOpacity>
