@@ -60,14 +60,16 @@ function MainTabs(): React.JSX.Element {
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
           borderTopColor: '#F0F0F0',
-          height: 90,
-          paddingTop: 10,
+          height: 72,
+          paddingTop: 6,
+          paddingBottom: 10,
           elevation: 0,
           shadowOpacity: 0,
         },
         tabBarActiveTintColor: '#FFC107',
         tabBarInactiveTintColor: '#999',
-        tabBarLabelStyle: { paddingBottom: 10, fontWeight: '600', fontSize: 12 },
+        tabBarLabelStyle: { marginBottom: 4, fontWeight: '600', fontSize: 12 },
+        tabBarIconStyle: { marginTop: 2 },
         tabBarIcon: ({ focused }) => getTabIcon(route.name, focused),
       })}
     >

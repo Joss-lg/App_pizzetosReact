@@ -12,6 +12,13 @@ export default function InicioScreen({ navigation }: any) {
   const { user, logout } = useAuth();
   const { sucursalSeleccionada, setSucursalSeleccionada } = useSucursal();
 
+  const irAlMenu = (categoria?: string, subcategoria?: string) => {
+    navigation.navigate('Menú', {
+      categoriaInicial: categoria ?? 'todas',
+      subcategoriaInicial: subcategoria,
+    });
+  };
+
   const accountData = {
     name: user?.displayName || 'Mi cuenta',
     email: user?.email || 'Sesión invitado',
@@ -145,35 +152,49 @@ export default function InicioScreen({ navigation }: any) {
         </View>
         <View style={styles.bannerCard}>
           <Image 
-            source={{ uri: 'https://t3.ftcdn.net/jpg/02/60/19/27/360_F_260192739_C3eX8q7c0d0i5m5bX0o5k5m5bX0o5k5.jpg' }} 
+            source={require('../assets/img/Refresco600.png')} 
             style={styles.bannerImage} 
           />
-          <View style={[styles.bannerBadge, styles.bannerBadgeAlt]}> 
-            <Text style={styles.bannerText}>JARRITOS $25</Text>
+          <View style={styles.bannerDrinkRow}>
+            <Text style={styles.bannerDrinkEmoji}>🥤</Text>
+            <View style={[styles.bannerBadge, styles.bannerBadgeAlt]}> 
+              <Text style={styles.bannerText}>BEBIDAS $25</Text>
+            </View>
           </View>
         </View>
       </ScrollView>
 
       {/* CATEGORÍAS CIRCULARES */}
-      <Text style={styles.sectionTitle}>Categorías</Text>
-      <View style={styles.categoriesGrid}>
-        <TouchableOpacity style={styles.catCircle} onPress={() => navigation.navigate('Menú')}>
+      <View style={styles.categoriesHeaderRow}>
+        <Text style={styles.sectionTitle}>Categorías</Text>
+        <Text style={styles.categoriesHint}>Desliza →</Text>
+      </View>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.categoriesGrid}
+      >
+        <TouchableOpacity style={styles.catCircle} onPress={() => irAlMenu('tradicionales')}>
           <View style={styles.iconContainer}><Text style={styles.catEmoji}>🍕</Text></View>
           <Text style={styles.catLabel}>Pizzas</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.catCircle} onPress={() => navigation.navigate('Menú')}>
+        <TouchableOpacity style={styles.catCircle} onPress={() => irAlMenu('snacks', 'burgers')}>
           <View style={styles.iconContainer}><Text style={styles.catEmoji}>🍔</Text></View>
           <Text style={styles.catLabel}>Burgers</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.catCircle} onPress={() => navigation.navigate('Menú')}>
+        <TouchableOpacity style={styles.catCircle} onPress={() => irAlMenu('snacks', 'alitas')}>
           <View style={styles.iconContainer}><Text style={styles.catEmoji}>🍗</Text></View>
           <Text style={styles.catLabel}>Alitas</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.catCircle} onPress={() => navigation.navigate('Menú')}>
+        <TouchableOpacity style={styles.catCircle} onPress={() => irAlMenu('snacks', 'pastas')}>
           <View style={styles.iconContainer}><Text style={styles.catEmoji}>🍝</Text></View>
           <Text style={styles.catLabel}>Pastas</Text>
         </TouchableOpacity>
-      </View>
+        <TouchableOpacity style={styles.catCircle} onPress={() => irAlMenu('bebidas', 'jarritos')}>
+          <View style={styles.iconContainer}><Text style={styles.catEmoji}>🥤</Text></View>
+          <Text style={styles.catLabel}>Bebidas</Text>
+        </TouchableOpacity>
+      </ScrollView>
 
       <View style={styles.bottomSpacer} />
       </ScrollView>
@@ -300,12 +321,16 @@ const styles = StyleSheet.create({
   bannerScroll: { marginBottom: 25 },
   bannerCard: { width: width * 0.8, height: 160, borderRadius: 15, marginRight: 15, overflow: 'hidden' },
   bannerImage: { width: '100%', height: '100%', resizeMode: 'cover' },
+  bannerDrinkRow: { position: 'absolute', left: 10, bottom: 10, flexDirection: 'row', alignItems: 'center' },
+  bannerDrinkEmoji: { fontSize: 28, marginRight: 8 },
   bannerBadge: { position: 'absolute', bottom: 10, left: 10, backgroundColor: '#FFC107', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 },
   bannerBadgeAlt: { backgroundColor: '#FF4500' },
   bannerText: { fontWeight: 'bold', fontSize: 12, color: '#000' },
+  categoriesHeaderRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   sectionTitle: { fontSize: 20, fontWeight: 'bold', color: '#000', marginBottom: 15 },
-  categoriesGrid: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 30 },
-  catCircle: { alignItems: 'center', width: '22%' },
+  categoriesHint: { fontSize: 12, fontWeight: '700', color: '#F15A24', marginBottom: 15 },
+  categoriesGrid: { paddingRight: 10, marginBottom: 30 },
+  catCircle: { alignItems: 'center', width: 92, marginRight: 14 },
   iconContainer: { width: 65, height: 65, backgroundColor: '#F9F9F9', borderRadius: 35, justifyContent: 'center', alignItems: 'center', marginBottom: 8, elevation: 3 },
   catEmoji: { fontSize: 30 },
   catLabel: { fontSize: 12, fontWeight: '600', color: '#333' },

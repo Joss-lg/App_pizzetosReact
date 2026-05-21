@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, Alert } from 'react-native';
 import { useCart } from '../CartContext';
 
@@ -36,17 +36,17 @@ const PRODUCTOS = [
   { id: 'pizza-rectangular', categoria: 'paquetes', nombre: 'Pizza Rectangular', descripcion: '4 especialidades a elegir + 1 Refresco (2Lts)', imagen: require('../assets/img/Rectangular.png'), precioFijo: 405 },
   { id: 'pizza-barra', categoria: 'paquetes', nombre: 'Pizza Barra', descripcion: '2 especialidades a elegir + 1 Refresco (2Lts)', imagen: require('../assets/img/Barra.png'), precioFijo: 290 },
   // --- SNACKS ---
-  { id: 'hamburguesa-sencilla', categoria: 'snacks', nombre: 'Hamburguesa Sencilla', descripcion: 'Acompañada de papas y refresco de 355ml', imagen: require('../assets/img/Hamburguesa.png'), precioFijo: 95 },
-  { id: 'hamburguesa-doble', categoria: 'snacks', nombre: 'Hamburguesa Doble', descripcion: 'Acompañada de papas y refresco de 355ml', imagen: require('../assets/img/HamburguesaD.png'), precioFijo: 110 },
-  { id: 'costillas-paquete', categoria: 'snacks', nombre: 'Costillas', descripcion: 'Acompañadas de papas y refresco de 355ml', imagen: require('../assets/img/Costillas.png'), precioFijo: 135 },
-  { id: 'alitas-paquete', categoria: 'snacks', nombre: 'Alitas', descripcion: 'Acompañadas de papas y refresco de 355ml', imagen: require('../assets/img/AlitasB.png'), precioFijo: 110 },
-  { id: 'papas-francesas', categoria: 'snacks', nombre: 'Orden de papas a la francesa', descripcion: 'Crujientes y doradas', imagen: require('../assets/img/Papas.png'), precioFijo: 60 },
-  { id: 'spaghetti-jamon', categoria: 'snacks', nombre: 'Spaguetty Jamón, queso y Tocino', descripcion: 'Orden para 2 personas', imagen: require('../assets/img/SpaguettyJ.png'), precioFijo: 150 },
-  { id: 'spaghetti-camaron', categoria: 'snacks', nombre: 'Spaghetti Camarón', descripcion: 'Orden para 2 personas', imagen: require('../assets/img/SpaguettyC.png'), precioFijo: 235 },
+  { id: 'hamburguesa-sencilla', categoria: 'snacks', subcategoria: 'burgers', nombre: 'Hamburguesa Sencilla', descripcion: 'Acompañada de papas y refresco de 355ml', imagen: require('../assets/img/Hamburguesa.png'), precioFijo: 95 },
+  { id: 'hamburguesa-doble', categoria: 'snacks', subcategoria: 'burgers', nombre: 'Hamburguesa Doble', descripcion: 'Acompañada de papas y refresco de 355ml', imagen: require('../assets/img/HamburguesaD.png'), precioFijo: 110 },
+  { id: 'costillas-paquete', categoria: 'snacks', subcategoria: 'alitas', nombre: 'Costillas', descripcion: 'Acompañadas de papas y refresco de 355ml', imagen: require('../assets/img/Costillas.png'), precioFijo: 135 },
+  { id: 'alitas-paquete', categoria: 'snacks', subcategoria: 'alitas', nombre: 'Alitas', descripcion: 'Acompañadas de papas y refresco de 355ml', imagen: require('../assets/img/AlitasB.png'), precioFijo: 110 },
+  { id: 'papas-francesas', categoria: 'snacks', subcategoria: 'pastas', nombre: 'Orden de papas a la francesa', descripcion: 'Crujientes y doradas', imagen: require('../assets/img/Papas.png'), precioFijo: 60 },
+  { id: 'spaghetti-jamon', categoria: 'snacks', subcategoria: 'pastas', nombre: 'Spaguetty Jamón, queso y Tocino', descripcion: 'Orden para 2 personas', imagen: require('../assets/img/SpaguettyJ.png'), precioFijo: 150 },
+  { id: 'spaghetti-camaron', categoria: 'snacks', subcategoria: 'pastas', nombre: 'Spaghetti Camarón', descripcion: 'Orden para 2 personas', imagen: require('../assets/img/SpaguettyC.png'), precioFijo: 235 },
   // --- BEBIDAS ---
-  { id: 'refresco-2lts', categoria: 'bebidas', nombre: 'Refresco 2 Lts', descripcion: 'Pepsi, Manzanita, Sangría, 7UP, Mirinda', imagen: require('../assets/img/Refresco2l.png'), precioFijo: 50 },
-  { id: 'refresco-600ml', categoria: 'bebidas', nombre: 'Refresco 600ml', descripcion: 'Pepsi, Manzanita, Sangría, 7UP, Mirinda, Jumex Fresh', imagen: require('../assets/img/Refresco600.png'), precioFijo: 25 },
-  { id: 'refresco-355ml', categoria: 'bebidas', nombre: 'Refresco 355ml', descripcion: 'Fanta, Sprite, Fresca, Mundet', imagen: require('../assets/img/Refresco355.png'), precioFijo: 17 },
+  { id: 'refresco-2lts', categoria: 'bebidas', subcategoria: 'jarritos', nombre: 'Refresco 2 Lts', descripcion: 'Pepsi, Manzanita, Sangría, 7UP, Mirinda', imagen: require('../assets/img/Refresco2l.png'), precioFijo: 50 },
+  { id: 'refresco-600ml', categoria: 'bebidas', subcategoria: 'jarritos', nombre: 'Refresco 600ml', descripcion: 'Pepsi, Manzanita, Sangría, 7UP, Mirinda, Jumex Fresh', imagen: require('../assets/img/Refresco600.png'), precioFijo: 25 },
+  { id: 'refresco-355ml', categoria: 'bebidas', subcategoria: 'jarritos', nombre: 'Refresco 355ml', descripcion: 'Fanta, Sprite, Fresca, Mundet', imagen: require('../assets/img/Refresco355.png'), precioFijo: 17 },
 ];
 
 const CATEGORIAS = [
@@ -152,9 +152,31 @@ const ProductCard = ({ item }: any) => {
   );
 };
 
-export default function MenuScreen() {
+export default function MenuScreen({ route }: any) {
   const [categoriaActiva, setCategoriaActiva] = useState('todas');
-  const productosFiltrados = categoriaActiva === 'todas' ? PRODUCTOS : PRODUCTOS.filter(p => p.categoria === categoriaActiva);
+  const [subcategoriaActiva, setSubcategoriaActiva] = useState<string | null>(null);
+
+  useEffect(() => {
+    const categoriaInicial = route?.params?.categoriaInicial ?? 'todas';
+    const subcategoriaInicial = route?.params?.subcategoriaInicial ?? null;
+
+    setCategoriaActiva(categoriaInicial);
+    setSubcategoriaActiva(subcategoriaInicial);
+  }, [route?.params?.categoriaInicial, route?.params?.subcategoriaInicial]);
+
+  const productosFiltrados = PRODUCTOS.filter(producto => {
+    const coincideCategoria = categoriaActiva === 'todas' || producto.categoria === categoriaActiva;
+
+    if (!coincideCategoria) {
+      return false;
+    }
+
+    if (subcategoriaActiva) {
+      return producto.subcategoria === subcategoriaActiva;
+    }
+
+    return true;
+  });
 
   return (
     <View style={styles.container}>
@@ -172,7 +194,10 @@ export default function MenuScreen() {
           renderItem={({ item }) => (
             <TouchableOpacity 
               style={[styles.catBtn, categoriaActiva === item.id && styles.catBtnActive]}
-              onPress={() => setCategoriaActiva(item.id)}
+              onPress={() => {
+                setCategoriaActiva(item.id);
+                setSubcategoriaActiva(null);
+              }}
             >
               <Text style={[styles.catText, categoriaActiva === item.id && styles.catTextActive]}>{item.nombre}</Text>
             </TouchableOpacity>
@@ -194,9 +219,9 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F9F9F9', paddingTop: 50 },
   headerContainer: { paddingHorizontal: 20, marginBottom: 15 },
   headerTitle: { fontSize: 28, fontWeight: '900', color: '#000' },
-  categoriasContainer: { height: 50 },
+  categoriasContainer: { height: 56 },
   categoriasContent: { paddingHorizontal: 15 },
-  productosListContent: { paddingBottom: 20, paddingHorizontal: 15 },
+  productosListContent: { paddingBottom: 34, paddingHorizontal: 15 },
   catBtn: { backgroundColor: '#FFF', paddingHorizontal: 15, paddingVertical: 8, borderRadius: 20, marginRight: 10, borderWidth: 1, borderColor: '#DDD' },
   catBtnActive: { backgroundColor: '#FFC107', borderColor: '#FFC107' },
   catText: { color: '#777', fontWeight: '600' },
