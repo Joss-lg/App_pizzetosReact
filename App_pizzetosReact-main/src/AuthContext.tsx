@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import {
   getAuth,
   signInWithCredential,
@@ -108,12 +108,16 @@ export const AuthProvider = ({ children }: any) => {
       // Guardar en AsyncStorage para persistencia
       await AsyncStorage.setItem('firebaseToken', idToken);
       await AsyncStorage.setItem('user', JSON.stringify(userData));
+    } catch (error: any) {
+      // Cancelar el selector de cuenta de Google es un flujo normal, no un error fatal.
+      if (error?.code === statusCodes.SIGN_IN_CANCELLED) {
+        return;
+      }
 
-      setIsLoading(false);
-    } catch (error) {
       console.error('Login error:', error);
-      setIsLoading(false);
       throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -144,19 +148,30 @@ export const AuthProvider = ({ children }: any) => {
   const logout = async () => {
     try {
       setIsLoading(true);
-      await signOut(authInstance);
-      await GoogleSignin.signOut();
+      const currentUser = authInstance.currentUser;
+
+      if (currentUser) {
+        await signOut(authInstance);
+      }
+
+      try {
+        await GoogleSignin.signOut();
+      } catch (googleSignOutError: any) {
+        if (googleSignOutError?.code !== 'auth/no-current-user') {
+          throw googleSignOutError;
+        }
+      }
+
       await AsyncStorage.removeItem('firebaseToken');
       await AsyncStorage.removeItem('user');
 
       setUser(null);
       setFirebaseToken(null);
       setIsSignedIn(false);
-      setIsLoading(false);
     } catch (error) {
       console.error('Logout error:', error);
+    } finally {
       setIsLoading(false);
-      throw error;
     }
   };
 
