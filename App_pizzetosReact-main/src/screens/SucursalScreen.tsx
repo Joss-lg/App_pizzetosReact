@@ -24,25 +24,6 @@ const abrirEnlace = async (url: string) => {
   }
 };
 
-const abrirWhatsapp = async (telefono: string) => {
-  const mensaje = 'Hola, quiero pedir en Pizzetos.';
-  const urlApp = `whatsapp://send?phone=${telefono}&text=${encodeURIComponent(mensaje)}`;
-  const urlWeb = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
-
-  try {
-    const soportaApp = await Linking.canOpenURL(urlApp);
-
-    if (soportaApp) {
-      await Linking.openURL(urlApp);
-      return;
-    }
-
-    await Linking.openURL(urlWeb);
-  } catch {
-    Alert.alert('Error', 'No se pudo abrir WhatsApp.');
-  }
-};
-
 const abrirGoogleMaps = async (direccion: string, googleMapsLink: string) => {
   const query = encodeURIComponent(direccion);
   const urlGeo = Platform.OS === 'android' ? `geo:0,0?q=${query}` : `maps:0,0?q=${query}`;
@@ -112,14 +93,6 @@ export default function SucursalScreen() {
 
           {/* Botones */}
           <TouchableOpacity
-            style={styles.botonWhatsapp}
-            onPress={() => abrirWhatsapp(sucursal.whatsapp)}
-          >
-            <Text style={styles.botonWhatsappIcono}>💬</Text>
-            <Text style={styles.botonWhatsappTexto}>Pedir por WhatsApp</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
             style={styles.botonMaps}
             onPress={() => abrirGoogleMaps(sucursal.direccion, sucursal.googleMapsLink)}
           >
@@ -162,19 +135,6 @@ const styles = StyleSheet.create({
   iconoBadgeText: { fontSize: 18 },
   infoTexto: { flex: 1, fontSize: 14, color: '#555', lineHeight: 22 },
   telefonoTexto: { fontSize: 18, fontWeight: '800', color: '#111' },
-  botonWhatsapp: {
-    backgroundColor: '#16A34A',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
-    paddingVertical: 16,
-    borderRadius: 16,
-    marginTop: 8,
-    marginBottom: 12,
-  },
-  botonWhatsappIcono: { fontSize: 22 },
-  botonWhatsappTexto: { color: '#FFF', fontWeight: '800', fontSize: 16 },
   botonMaps: {
     backgroundColor: '#111',
     paddingVertical: 14,
