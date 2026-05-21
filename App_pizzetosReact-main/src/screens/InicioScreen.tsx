@@ -6,6 +6,27 @@ import { SUCURSALES_DISPONIBLES } from '../data/sucursales';
 
 const { width } = Dimensions.get('window');
 
+const PAQUETES_DESTACADOS = [
+  {
+    id: 'paquete-1',
+    nombre: 'Paquete 1',
+    precio: '$330',
+    imagen: require('../assets/img/Paquete1.png'),
+  },
+  {
+    id: 'paquete-2',
+    nombre: 'Paquete 2',
+    precio: '$295',
+    imagen: require('../assets/img/Paquete2.png'),
+  },
+  {
+    id: 'promo-magno',
+    nombre: 'Promo Magno',
+    precio: '$260',
+    imagen: require('../assets/img/Magno.png'),
+  },
+];
+
 export default function InicioScreen({ navigation }: any) {
   const [menuVisible, setMenuVisible] = useState(false);
   const [sucursalSelectorVisible, setSucursalSelectorVisible] = useState(false);
@@ -139,6 +160,8 @@ export default function InicioScreen({ navigation }: any) {
         </View>
       </View>
 
+      <Text style={styles.announcementsTitle}>Anuncios</Text>
+
       {/* BANNERS */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.bannerScroll}>
         <View style={styles.bannerCard}>
@@ -167,7 +190,7 @@ export default function InicioScreen({ navigation }: any) {
       {/* CATEGORÍAS CIRCULARES */}
       <View style={styles.categoriesHeaderRow}>
         <Text style={styles.sectionTitle}>Categorías</Text>
-        <Text style={styles.categoriesHint}>Desliza →</Text>
+        <Text style={styles.categoriesHint}>→</Text>
       </View>
       <ScrollView
         horizontal
@@ -194,6 +217,36 @@ export default function InicioScreen({ navigation }: any) {
           <View style={styles.iconContainer}><Text style={styles.catEmoji}>🥤</Text></View>
           <Text style={styles.catLabel}>Bebidas</Text>
         </TouchableOpacity>
+      </ScrollView>
+
+      <View style={styles.packagesHeaderRow}>
+        <Text style={styles.packagesTitle}>Paquetes Disponibles</Text>
+        <TouchableOpacity onPress={() => irAlMenu('paquetes')} activeOpacity={0.8}>
+          <Text style={styles.packagesHint}>Ver todo →</Text>
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.packagesScrollContent}
+      >
+        {PAQUETES_DESTACADOS.map(paquete => (
+          <TouchableOpacity
+            key={paquete.id}
+            style={styles.packageCard}
+            activeOpacity={0.9}
+            onPress={() => irAlMenu('paquetes')}
+          >
+            <Image source={paquete.imagen} style={styles.packageImage} />
+            <View style={styles.packageOverlay}>
+              <Text style={styles.packageName}>{paquete.nombre}</Text>
+              <View style={styles.packagePriceBadge}>
+                <Text style={styles.packagePriceText}>Desde {paquete.precio}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        ))}
       </ScrollView>
 
       <View style={styles.bottomSpacer} />
@@ -318,6 +371,7 @@ const styles = StyleSheet.create({
   searchBar: { backgroundColor: '#F0F0F0', borderRadius: 10, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, height: 45 },
   searchIcon: { fontSize: 18, marginRight: 10 },
   searchInput: { flex: 1, fontSize: 16, color: '#333' },
+  announcementsTitle: { fontSize: 16, fontWeight: '700', color: '#111', marginBottom: 10 },
   bannerScroll: { marginBottom: 25 },
   bannerCard: { width: width * 0.8, height: 160, borderRadius: 15, marginRight: 15, overflow: 'hidden' },
   bannerImage: { width: '100%', height: '100%', resizeMode: 'cover' },
@@ -331,6 +385,66 @@ const styles = StyleSheet.create({
   categoriesHint: { fontSize: 12, fontWeight: '700', color: '#F15A24', marginBottom: 15 },
   categoriesGrid: { paddingRight: 10, marginBottom: 30 },
   catCircle: { alignItems: 'center', width: 92, marginRight: 14 },
+  packagesHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  packagesTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  packagesHint: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#F15A24',
+  },
+  packagesScrollContent: {
+    paddingRight: 10,
+    marginBottom: 20,
+  },
+  packageCard: {
+    width: width * 0.78,
+    height: 145,
+    borderRadius: 18,
+    marginRight: 14,
+    overflow: 'hidden',
+    backgroundColor: '#111',
+  },
+  packageImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  packageOverlay: {
+    position: 'absolute',
+    left: 12,
+    right: 12,
+    bottom: 12,
+  },
+  packageName: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '800',
+    marginBottom: 8,
+    textShadowColor: 'rgba(0,0,0,0.45)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 3,
+  },
+  packagePriceBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#FFC107',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  packagePriceText: {
+    color: '#111111',
+    fontSize: 12,
+    fontWeight: '900',
+  },
   iconContainer: { width: 65, height: 65, backgroundColor: '#F9F9F9', borderRadius: 35, justifyContent: 'center', alignItems: 'center', marginBottom: 8, elevation: 3 },
   catEmoji: { fontSize: 30 },
   catLabel: { fontSize: 12, fontWeight: '600', color: '#333' },
