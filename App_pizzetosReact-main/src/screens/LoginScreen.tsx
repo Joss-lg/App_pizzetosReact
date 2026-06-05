@@ -48,7 +48,7 @@ export default function LoginScreen({ navigation: _navigation }: Props) {
     <View style={styles.container}>
       <View style={styles.card}>
         <Image
-          source={require('../assets/img/pizzetos.png')}
+          source={require('../assets/img/pizzetos.webp')}
           style={styles.logo}
         />
         <Text style={styles.title}>Bienvenido a Pizzetos</Text>

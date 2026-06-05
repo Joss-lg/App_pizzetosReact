@@ -11,19 +11,19 @@ const PAQUETES_DESTACADOS = [
     id: 'paquete-1',
     nombre: 'Paquete 1',
     precio: '$330',
-    imagen: require('../assets/img/Paquete1.png'),
+    imagen: require('../assets/img/Paquete1.webp'),
   },
   {
     id: 'paquete-2',
     nombre: 'Paquete 2',
     precio: '$295',
-    imagen: require('../assets/img/Paquete2.png'),
+    imagen: require('../assets/img/Paquete2.webp'),
   },
   {
     id: 'promo-magno',
     nombre: 'Promo Magno',
     precio: '$260',
-    imagen: require('../assets/img/Magno.png'),
+    imagen: require('../assets/img/Magno.webp'),
   },
 ];
 
@@ -175,7 +175,7 @@ export default function InicioScreen({ navigation }: any) {
         </View>
         <View style={styles.bannerCard}>
           <Image 
-            source={require('../assets/img/Refresco600.png')} 
+            source={require('../assets/img/Refresco600.webp')} 
             style={styles.bannerImage} 
           />
           <View style={styles.bannerDrinkRow}>
